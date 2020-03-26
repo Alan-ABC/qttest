@@ -28,6 +28,47 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>拥有版本：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="AEdition"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>开始版本：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="fromNumer"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>结束版本：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="toNumber"/>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="bAllCheck">
+        <property name="text">
+         <string>是否连续</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="sizeConstraint">
        <enum>QLayout::SetMinAndMaxSize</enum>
@@ -61,6 +102,13 @@
          <widget class="QLineEdit" name="toVersion"/>
         </item>
         <item>
+         <widget class="QPushButton" name="clearBtn">
+          <property name="text">
+           <string>清除所有数据</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButton">
           <property name="text">
            <string>执行</string>
@@ -71,7 +119,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item row="5" column="0">
      <widget class="QTabWidget" name="tabsVersion">
       <widget class="QWidget" name="tab">
        <attribute name="title">

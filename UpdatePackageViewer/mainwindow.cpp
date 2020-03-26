@@ -12,6 +12,7 @@
 #include <qsizepolicy.h>
 #include <QHeaderView>
 #include <QTime>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,19 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
     InitConstrols();
 
     ui->tabsVersion->clear();
-
-    //setCentralWidget(this);
-
-    /*QTableView* table = new QTableView(tab1);
-
-    table->resize(QSize(300, 200));
-    QWidget* tab2 = new QWidget(ui->tabsVersion);
-
-    ui->tabsVersion->addTab(tab2, icon, QString::fromUtf8("ccccc"));
-    QWidget* tab3 = new QWidget(ui->tabsVersion);
-    ui->tabsVersion->addTab(tab3, icon, QString::fromUtf8("ddddd"));
-    QWidget* tab4 = new QWidget(ui->tabsVersion);
-    ui->tabsVersion->addTab(tab4, icon, QString::fromUtf8("eee"));*/
 }
 
 MainWindow::~MainWindow()
@@ -52,6 +40,8 @@ MainWindow::~MainWindow()
 void MainWindow::InitConstrols()
 {
     connect(ui->tabsVersion, SIGNAL(currentChanged(int)), this, SLOT(onTabchanged(int)));
+
+    GetAllEdition();
 }
 
 QString MainWindow::GetFilePath(QString fileName)
@@ -183,6 +173,60 @@ QList<AssetData*>* MainWindow::DiffVersionByPreview(int pre, int next)
     return updateItems;
 }
 
+void MainWindow::GetAllEdition()
+{
+    QString path = QApplication::applicationDirPath();
+
+    QDir dir(path);
+
+    if (dir.exists())
+    {
+        dir.setFilter(QDir::Dirs | QDir::Files);
+        dir.setSorting(QDir::DirsFirst);
+        QFileInfoList list = dir.entryInfoList();
+
+        for (int i = 0; i < list.count(); ++i)
+        {
+            QFileInfo info = list.at(i);
+
+            if (info.isFile())
+            {
+                QString orgfileName = info.fileName();
+
+                if (orgfileName.indexOf("ResVersion") == -1)
+                {
+                    continue;
+                }
+
+                QString fileName = GetEditionFromFileName(orgfileName);
+
+                if (!editions.contains(fileName))
+                {
+                    editions.append(fileName);
+                }
+
+                allFiles.append(GetFileNameNoExtra(orgfileName));
+            }
+        }
+    }
+
+    ui->AEdition->addItems(editions);
+}
+
+QString MainWindow::GetFileNameNoExtra(QString fileName)
+{
+    int idx = fileName.lastIndexOf('.');
+    QString nameNoExtra = fileName.left(idx);
+    return nameNoExtra;
+}
+
+QString MainWindow::GetEditionFromFileName(QString fileName)
+{
+    int idx = fileName.lastIndexOf('_');
+    QString nameNoExtra = fileName.left(idx);
+    return nameNoExtra;
+}
+
 
 void MainWindow::LoadConfig(int index, QString fileName)
 {
@@ -238,30 +282,61 @@ void MainWindow::LoadConfig(int index, QString fileName)
 
 void MainWindow::on_pushButton_clicked()
 {
+    if (ui->fromVersion->text().count() == 0 || ui->toVersion->text().count() == 0)
+    {
+        return;
+    }
+
     QString fileName = ui->fromVersion->text();
     int idx = fileName.lastIndexOf('.');
     prefix = fileName.left(idx);
     QString start = fileName.right(fileName.count() - idx - 1);
     startPage = start.toShort();
 
-    QString endFileName = ui->toVersion->text();
-    idx = endFileName.lastIndexOf('.');
-    QString end = endFileName.right(endFileName.count() - idx - 1);
-    endPage = end.toShort();
-
-    for (short i = startPage; i <= endPage; ++i)
+    if (ui->bAllCheck->isChecked())
     {
-        bInst->append(false);
-        List.append(nullptr);
+        QString endFileName = ui->toVersion->text();
+        idx = endFileName.lastIndexOf('.');
+        QString end = endFileName.right(endFileName.count() - idx - 1);
+        endPage = end.toShort();
 
-        QWidget* tab = new QWidget(ui->tabsVersion);
-        QIcon icon;
-        QString str;
-        str.setNum(i);
-        QString fileName = prefix + "." + str + ".xml";
-        fileNames.append(fileName);
-        widget.append(tab);
-        ui->tabsVersion->addTab(tab, icon, fileName);
+        for (short i = startPage; i <= endPage; ++i)
+        {
+            bInst->append(false);
+            List.append(nullptr);
+
+            QWidget* tab = new QWidget(ui->tabsVersion);
+            QIcon icon;
+            QString str;
+            str.setNum(i);
+            QString fileName = prefix + "." + str + ".xml";
+            fileNames.append(fileName);
+            widget.append(tab);
+            ui->tabsVersion->addTab(tab, icon, fileName);
+        }
+    }
+    else
+    {
+        for (short i = startPage; i <= startPage + 1; ++i)
+        {
+            bInst->append(false);
+            List.append(nullptr);
+
+            QWidget* tab = new QWidget(ui->tabsVersion);
+            QIcon icon;
+            QString fileName;
+            if (i == startPage)
+            {
+                fileName = ui->fromVersion->text() + ".xml";
+            }
+            else
+            {
+                fileName = ui->toVersion->text() + ".xml";
+            }
+            fileNames.append(fileName);
+            widget.append(tab);
+            ui->tabsVersion->addTab(tab, icon, fileName);
+        }
     }
 
 
@@ -274,4 +349,73 @@ void MainWindow::onTabchanged(int index)
     {
         AddTabPage(index, fileNames[index]);
     }
+}
+
+void MainWindow::on_clearBtn_clicked()
+{
+    bInst->clear();
+    for (int i = 0; i < widget.count(); ++i)
+    {
+        ui->tabsVersion->removeTab(i);
+        delete widget.at(i);
+    }
+
+    widget.clear();
+
+    for (int i = List.count() - 1; i >= 0; --i)
+    {
+        QList<AssetData*>* child = List.at(i);
+
+        if (child == nullptr)
+        {
+            List.removeAt(i);
+            continue;
+        }
+
+        for (int k = child->count() - 1; k >= 0; --k)
+        {
+            AssetData *data =  child->at(k);
+            if (data != nullptr)
+            {
+                delete data;
+            }
+
+            child->removeAt(k);
+        }
+
+        delete List.at(i);
+        List.removeAt(i);
+        fileNames.clear();
+    }
+}
+
+void MainWindow::on_fromNumer_currentTextChanged(const QString &arg1)
+{
+    ui->fromVersion->setText(arg1);
+}
+
+void MainWindow::on_AEdition_currentTextChanged(const QString &arg1)
+{
+    qDebug()<<arg1;
+
+    QStringList list;
+    for (int i = 0; i < allFiles.count(); ++i)
+    {
+        QString fileName = allFiles.at(i);
+        if (fileName.indexOf(arg1) > -1)
+        {
+            list.append(fileName);
+        }
+    }
+
+    ui->fromNumer->clear();
+    ui->fromNumer->addItems(list);
+
+    ui->toNumber->clear();
+    ui->toNumber->addItems(list);
+}
+
+void MainWindow::on_toNumber_currentTextChanged(const QString &arg1)
+{
+    ui->toVersion->setText(arg1);
 }

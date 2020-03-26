@@ -27,10 +27,21 @@ public:
     QString GetFilePath(QString fileName);
     void AddTabPage(int pageIdx, QString fileName);
     QList<AssetData*>* DiffVersionByPreview(int pre, int next);
+    void GetAllEdition();
+    QString GetFileNameNoExtra(QString fileName);
+    QString GetEditionFromFileName(QString fileName);
 
 private slots:
     void on_pushButton_clicked();
     void onTabchanged(int index);
+
+    void on_clearBtn_clicked();
+
+    void on_fromNumer_currentTextChanged(const QString &arg1);
+
+    void on_AEdition_currentTextChanged(const QString &arg1);
+
+    void on_toNumber_currentTextChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;
@@ -41,6 +52,8 @@ private:
     QList<bool> *bInst;
     QList<QWidget*> widget;
     QList<QString> fileNames;
+    QStringList editions;
+    QStringList allFiles;
 };
 
 #endif // MAINWINDOW_H
