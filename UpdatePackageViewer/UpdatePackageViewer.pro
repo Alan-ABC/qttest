@@ -35,3 +35,5 @@ HEADERS += \
 FORMS += \
         mainwindow.ui \
     mainwindow1.ui
+
+RC_FILE = myapp.rc
