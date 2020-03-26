@@ -95,6 +95,7 @@ void MainWindow::AddTabPage(int pageIdx, QString fileName)
     tView->setColumnWidth(1, 400);
     tView->setColumnWidth(2, 50);
     tView->setColumnWidth(3, 50);
+    tView->setAlternatingRowColors(true);
 
     QList<AssetData*>* temp = nullptr;
 
