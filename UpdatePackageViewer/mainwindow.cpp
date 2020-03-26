@@ -78,8 +78,9 @@ void MainWindow::AddTabPage(int pageIdx, QString fileName)
 
     //qDebug()<< QTime::currentTime().msecsSinceStartOfDay();
     //ui->tabsVersion->
-
+    QGridLayout* rgid = new QGridLayout(widget.at(pageIdx));
     QTableView* tView = new QTableView(widget.at(pageIdx));
+    rgid->addWidget(tView, 0, 0, 1, 1);
     QStandardItemModel* model = new QStandardItemModel(tView);
     tView->setGeometry(0, 0, 1000, 800);
     //tView->setSizePolicy(QSizePolicy::Expanding);
@@ -134,8 +135,8 @@ void MainWindow::AddTabPage(int pageIdx, QString fileName)
         delete temp;
     }
 
-    //tView->resizeColumnsToContents();
-    //tView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    tView->resizeColumnsToContents();
+    tView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     //tView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     //tView->setMaximumSize(QSize(10000, 10000));
     tView->show();
