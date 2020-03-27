@@ -26,7 +26,7 @@ public:
     void LoadConfig(int index, QString fileName);
     QString GetFilePath(QString fileName);
     void AddTabPage(int pageIdx, QString fileName);
-    QList<AssetData*>* DiffVersionByPreview(int pre, int next);
+    QVector<AssetData*>* DiffVersionByPreview(int pre, int next);
     void GetAllEdition();
     QString GetFileNameNoExtra(QString fileName);
     QString GetEditionFromFileName(QString fileName);
@@ -45,13 +45,13 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QList<QList<AssetData*>*> List;
+    QVector<QVector<AssetData*>*> List;
     QString prefix;
     short startPage;
     short endPage;
-    QList<bool> *bInst;
-    QList<QWidget*> widget;
-    QList<QString> fileNames;
+    QVector<bool> *bInst;
+    QVector<QWidget*> widget;
+    QVector<QString> fileNames;
     QStringList editions;
     QStringList allFiles;
 };

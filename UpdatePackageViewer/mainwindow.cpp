@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     prefix("")
 {
-    bInst = new QList<bool>();
+    bInst = new QVector<bool>();
     ui->setupUi(this);
 
     InitConstrols();
@@ -87,7 +87,7 @@ void MainWindow::AddTabPage(int pageIdx, QString fileName)
     tView->setColumnWidth(3, 50);
     tView->setAlternatingRowColors(true);
 
-    QList<AssetData*>* temp = nullptr;
+    QVector<AssetData*>* temp = nullptr;
 
     if (pageIdx > 0)
     {
@@ -134,18 +134,20 @@ void MainWindow::AddTabPage(int pageIdx, QString fileName)
     //qDebug()<<QTime::currentTime().msecsSinceStartOfDay();
 }
 
-QList<AssetData*>* MainWindow::DiffVersionByPreview(int pre, int next)
+QVector<AssetData*>* MainWindow::DiffVersionByPreview(int pre, int next)
 {
-    QList<AssetData*>* updateItems = new QList<AssetData*>();
+    QVector<AssetData*>* updateItems = new QVector<AssetData*>();
 
-    for (int i = 0; i < List.at(next)->count(); ++i)
+    QVector<AssetData*>* newList = List.at(next);
+    QVector<AssetData*>* oldList = List.at(pre);
+    for (int i = 0, count = newList->count(); i < count; ++i)
     {
         bool hasItem = false;
-        AssetData* itemNew = List.at(next)->at(i);
+        AssetData* itemNew = newList->at(i);
 
-        for (int k = 0; k < List.at(pre)->count(); ++k)
+        for (int k = 0, count2 = oldList->count(); k < count2; ++k)
         {
-            AssetData* itemOld = List.at(pre)->at(k);
+            AssetData* itemOld = oldList->at(k);
 
             if (itemOld->name == itemNew->name)
             {
@@ -273,7 +275,7 @@ void MainWindow::LoadConfig(int index, QString fileName)
         //qDebug()<<data->name<<data->md5<<data->size;
         if (List.at(index) == nullptr)
         {
-            List.replace(index, new QList<AssetData*>());
+            List.replace(index, new QVector<AssetData*>());
         }
         List.at(index)->append(data);
         catalogs = catalogs.nextSiblingElement();
@@ -364,7 +366,7 @@ void MainWindow::on_clearBtn_clicked()
 
     for (int i = List.count() - 1; i >= 0; --i)
     {
-        QList<AssetData*>* child = List.at(i);
+        QVector<AssetData*>* child = List.at(i);
 
         if (child == nullptr)
         {
