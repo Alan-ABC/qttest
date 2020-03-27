@@ -23,13 +23,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void InitConstrols();
-    void LoadConfig(int index, QString fileName);
-    QString GetFilePath(QString fileName);
-    void AddTabPage(int pageIdx, QString fileName);
+    void LoadConfig(int index, const QString& fileName);
+    QString GetFilePath(const QString& fileName);
+    void AddTabPage(int pageIdx, const QString& fileName);
     QVector<AssetData*>* DiffVersionByPreview(int pre, int next);
     void GetAllEdition();
-    QString GetFileNameNoExtra(QString fileName);
-    QString GetEditionFromFileName(QString fileName);
+    QString GetFileNameNoExtra(const QString& fileName);
+    QString GetEditionFromFileName(const QString& fileName);
 
 private slots:
     void on_pushButton_clicked();

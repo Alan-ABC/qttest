@@ -44,13 +44,13 @@ void MainWindow::InitConstrols()
     GetAllEdition();
 }
 
-QString MainWindow::GetFilePath(QString fileName)
+QString MainWindow::GetFilePath(const QString& fileName)
 {
     QString filePath = QApplication::applicationDirPath() + "/" + fileName;
     return filePath;
 }
 
-void MainWindow::AddTabPage(int pageIdx, QString fileName)
+void MainWindow::AddTabPage(int pageIdx, const QString& fileName)
 {
     if (pageIdx < 0 && pageIdx >= bInst->count())
     {
@@ -215,14 +215,14 @@ void MainWindow::GetAllEdition()
     ui->AEdition->addItems(editions);
 }
 
-QString MainWindow::GetFileNameNoExtra(QString fileName)
+QString MainWindow::GetFileNameNoExtra(const QString& fileName)
 {
     int idx = fileName.lastIndexOf('.');
     QString nameNoExtra = fileName.left(idx);
     return nameNoExtra;
 }
 
-QString MainWindow::GetEditionFromFileName(QString fileName)
+QString MainWindow::GetEditionFromFileName(const QString& fileName)
 {
     int idx = fileName.lastIndexOf('_');
     QString nameNoExtra = fileName.left(idx);
@@ -230,7 +230,7 @@ QString MainWindow::GetEditionFromFileName(QString fileName)
 }
 
 
-void MainWindow::LoadConfig(int index, QString fileName)
+void MainWindow::LoadConfig(int index, const QString& fileName)
 {
     //qDebug()<<QApplication::applicationDirPath() + "/ResVersion1.0.2_1.0.48.xml";
     QString filePath = GetFilePath(fileName);
