@@ -35,6 +35,14 @@ MainWindow::~MainWindow()
         List.removeAt(i);
     }
     delete ui;
+    delete bInst;
+
+    for (int i = widget.count() - 1; i >= 0; --i)
+    {
+        delete widget.at(i);
+    }
+
+    widget.clear();
 }
 
 void MainWindow::InitConstrols()
